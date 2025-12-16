@@ -10,5 +10,5 @@ import lombok.*;
 public class ChurnResponseDTO {
 
     private String previsao;
-    private Double probablidade;
+    private Double probabilidade;
 }
