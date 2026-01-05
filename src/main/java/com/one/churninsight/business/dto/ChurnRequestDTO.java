@@ -9,13 +9,22 @@ import lombok.*;
 @Builder
 public class ChurnRequestDTO {
 
-    // Precisamos usar os nomes EXATOS que o Python espera.
-    // Se quiser usar nomes em português, teríamos que usar anotação @JsonProperty("months")
-    // Mas para o Hackathon, mudar o nome da variável é mais rápido e seguro.
+    // --- Dados Originais ---
+    private Double months;
+    private Double rev_Mean;
+    private Double mou_Mean;
+    private Double totcalls;
+    private Double eqpdays;
 
-    private Double months;    // Tempo de contrato
-    private Double rev_Mean;  // Receita média
-    private Double mou_Mean;  // Média de uso (minutos)
-    private Double totcalls;  // Total de chamadas
-    private Double eqpdays;   // Idade do equipamento (dias)
+    // --- Novos Dados (Engenharia de Features) ---
+    private Double rev_per_minute;
+    private Double calls_per_month;
+    private Double eqp_age_index;
+
+    // --- Novos Dados (Brutos) ---
+    private Double custcare_Mean; // Chamadas para suporte
+    private Double drop_vce_Mean; // Chamadas caídas
+    private Double blck_vce_Mean; // Chamadas bloqueadas
+    private Double avgmou;        // Média histórica de uso
+    private Double avgrev;        // Média histórica de receita
 }

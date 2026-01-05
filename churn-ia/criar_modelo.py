@@ -1,38 +1,31 @@
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import joblib
 
-print("Criando modelo MVP compatível com suas 5 colunas...")
+print("Criando Pipeline Mock com 13 features...")
 
-# 1. Simular dados de treinamento (já que não temos o CSV original fácil)
-# Criamos 1000 clientes falsos com as 5 colunas que seu Java manda
-dados = {
-    'months': np.random.randint(1, 72, 1000),      # 1 a 72 meses
-    'rev_Mean': np.random.uniform(20, 200, 1000),  # Conta de 20 a 200 reais
-    'mou_Mean': np.random.uniform(10, 1000, 1000), # Minutos de uso
-    'totcalls': np.random.randint(0, 500, 1000),   # Total de chamadas
-    'eqpdays': np.random.randint(0, 1000, 1000),   # Idade do equipamento
-    'churn': np.random.randint(0, 2, 1000)         # 0 ou 1 (Cancelou ou não)
-}
+# 1. Colunas exigidas
+features = [
+    'months', 'rev_Mean', 'mou_Mean', 'totcalls', 'eqpdays',
+    'rev_per_minute', 'calls_per_month', 'eqp_age_index',
+    'custcare_Mean', 'drop_vce_Mean', 'blck_vce_Mean', 'avgmou', 'avgrev'
+]
 
-df = pd.DataFrame(dados)
+# 2. Dados falsos para treino (100 linhas)
+df = pd.DataFrame(np.random.randint(0, 100, size=(100, len(features))), columns=features)
+y = np.random.randint(0, 2, size=100)
 
-# Separar entrada (X) e saída (y)
-X = df[['months', 'rev_Mean', 'mou_Mean', 'totcalls', 'eqpdays']]
-y = df['churn']
+# 3. Criar Pipeline (Scaler + Modelo juntos)
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', RandomForestClassifier(n_estimators=10))
+])
 
-# 2. Criar e treinar o Scaler (A régua)
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+pipeline.fit(df, y)
 
-# 3. Criar e treinar o Modelo (O cérebro)
-modelo = RandomForestClassifier(n_estimators=50, random_state=42)
-modelo.fit(X_scaled, y)
-
-# 4. Salvar os arquivos novos
-joblib.dump(modelo, 'modelo_mvp.joblib')
-joblib.dump(scaler, 'scaler_mvp.joblib')
-
-print("✅ SUCESSO! Arquivos 'modelo_mvp.joblib' e 'scaler_mvp.joblib' criados.")
+# 4. Salvar
+joblib.dump(pipeline, 'modelo_mvp_13_features.joblib')
+print("✅ Arquivo 'modelo_mvp_13_features.joblib' criado com sucesso.")
